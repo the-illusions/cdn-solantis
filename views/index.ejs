@@ -3,59 +3,107 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CDN Image</title>
+  <title>CDN Image Link</title>
   <style>
+    /* Set up the background image */
     body {
       font-family: Arial, sans-serif;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-image: url('<%= imageUrl %>');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: #fff;
+    }
+
+    .container {
+      background-color: rgba(0, 0, 0, 0.6); /* Dark overlay for text visibility */
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 500px;
       text-align: center;
-      margin: 50px;
     }
-    img {
-      max-width: 100%;
-      height: auto;
+
+    .link-box {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #f4f4f4;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      color: #333;
     }
-    button {
-      padding: 10px 20px;
-      margin-top: 20px;
-      cursor: pointer;
+
+    .link-box input {
+      border: none;
+      background: none;
+      flex: 1;
+      padding: 5px;
+      font-size: 14px;
+    }
+
+    .link-box button {
+      padding: 5px 10px;
       background-color: #4CAF50;
       color: white;
       border: none;
+      cursor: pointer;
       border-radius: 5px;
-      font-size: 16px;
     }
-    button:hover {
+
+    .link-box button:hover {
       background-color: #45a049;
     }
-    .link-box {
-      margin-top: 20px;
-      padding: 10px;
-      border: 1px solid #ddd;
-      background: #f9f9f9;
-      display: inline-block;
-      border-radius: 5px;
+
+    #status {
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-  <h1>CDN Image Viewer</h1>
-  <img src="<%= imageUrl %>" alt="Protected Image">
-  <div class="link-box">
-    <input type="text" id="imageLink" value="<%= imageUrl %>" readonly>
-    <button onclick="copyLink()">Copy Link</button>
+  <div class="container">
+    <h1>Get CDN Image Link</h1>
+    <div class="link-box">
+      <input type="text" id="cdn-link" value="<%= imageUrl %>" readonly>
+      <button id="copy-btn">Copy</button>
+    </div>
+    <p id="status"></p>
   </div>
 
   <script>
-    function copyLink() {
-      const link = document.getElementById('imageLink');
-      link.select();
-      link.setSelectionRange(0, 99999); // For mobile devices
-      navigator.clipboard.writeText(link.value).then(() => {
-        alert('Image link copied!');
-      }).catch(err => {
-        console.error('Could not copy text: ', err);
-      });
-    }
+    // Get elements
+    const copyBtn = document.getElementById('copy-btn');
+    const cdnLinkInput = document.getElementById('cdn-link');
+    const statusMessage = document.getElementById('status');
+
+    // Add click event listener to the copy button
+    copyBtn.addEventListener('click', () => {
+      // Select the text in the input
+      cdnLinkInput.select();
+      cdnLinkInput.setSelectionRange(0, 99999); // For mobile devices
+
+      // Try to copy the text
+      try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+          statusMessage.textContent = 'Link copied to clipboard!';
+          statusMessage.style.color = 'green';
+        } else {
+          statusMessage.textContent = 'Failed to copy the link.';
+          statusMessage.style.color = 'red';
+        }
+      } catch (err) {
+        statusMessage.textContent = 'An error occurred while copying the link.';
+        statusMessage.style.color = 'red';
+      }
+    });
   </script>
 </body>
 </html>

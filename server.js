@@ -11,6 +11,12 @@ app.use(helmet());
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 
+// Render frontend page
+app.get('/', (req, res) => {
+  const imageUrl = `${req.protocol}://${req.get('host')}/cdn-image`;
+  res.render('index', { imageUrl });
+});
+
 // Security Middleware for image access
 app.get('/cdn-image', (req, res) => {
   const referer = req.headers.referer || '';
@@ -21,12 +27,6 @@ app.get('/cdn-image', (req, res) => {
   } else {
     res.status(403).send('You are not authorized to access this resource.');
   }
-});
-
-// Render frontend page
-app.get('/', (req, res) => {
-  const imageUrl = `${req.protocol}://${req.get('host')}/cdn-image`;
-  res.render('index', { imageUrl });
 });
 
 // Start server
