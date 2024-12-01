@@ -6,6 +6,11 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+
+
+app.set('views', path.join(__dirname, 'views')); // Make sure this path is correct
+
+
 // Middleware
 app.use(helmet());
 app.use(express.static(path.join(__dirname, 'public')));
