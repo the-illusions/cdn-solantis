@@ -6,32 +6,29 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-
-
-app.set('views', path.join(__dirname, 'views')); // Make sure this path is correct
-
-
 // Middleware
 app.use(helmet());
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 
-// Render frontend page
-app.get('/', (req, res) => {
-  const imageUrl = `${req.protocol}://${req.get('host')}/cdn-image`;
-  res.render('index', { imageUrl });
-});
-
 // Security Middleware for image access
 app.get('/cdn-image', (req, res) => {
   const referer = req.headers.referer || '';
+  console.log(`Referer: ${referer}`); // Log the referer to debug
   const allowedDomain = process.env.ALLOWED_DOMAIN;
 
   if (referer.startsWith(allowedDomain)) {
     res.sendFile(path.join(__dirname, 'public/images/Nation-Union-Finale ZMV3.png'));
   } else {
+    console.log(`Blocked access: ${referer}`); // Log the blocked access
     res.status(403).send('You are not authorized to access this resource.');
   }
+});
+
+// Render frontend page
+app.get('/', (req, res) => {
+  const imageUrl = `${req.protocol}://${req.get('host')}/cdn-image`;
+  res.render('index', { imageUrl });
 });
 
 // Start server
